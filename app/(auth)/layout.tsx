@@ -14,5 +14,7 @@ export default async function AuthLayout({
     redirect("/login");
   }
 
+  // set user in context
+
   return <>{children}</>;
 }
