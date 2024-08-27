@@ -1,9 +1,9 @@
-import { supabase } from "@/services/supabase";
+// import { supabase } from "@/services/supabase-client";
 
-export default async function Home() {
-  const { data, error } = await supabase.from("countries").select();
+export default function Home() {
+  // const { data, error } = await supabase.from("countries").select();
 
-  console.log(data, error);
+  // console.log(data, error);
 
   return <></>;
 }
