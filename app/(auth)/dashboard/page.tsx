@@ -1,7 +1,9 @@
-import { createClient } from "@/utils/supabase/server-client";
-
 export default async function Dashboard() {
-  const supabase = createClient();
+  // console.log(data, error);
+
+  // const user = authContext((state) => state.user);
+
+  // console.log(user);
 
   return (
     <div>
