@@ -69,5 +69,5 @@
 }
 
 .primaryContainer {
-  @apply bg-white px-4 pt-20 pb-8 max-w-[1300px] mx-auto xl:px-0 xl:pt-8 xl:pl-64;
+  @apply p-4 max-w-[1300px] mx-auto pt-20 xl:px-0 xl:pt-8 xl:pl-64;
 }

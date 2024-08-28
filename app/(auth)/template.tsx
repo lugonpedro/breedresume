@@ -13,14 +13,12 @@ import { createClient } from "@/utils/supabase/browser-client";
 import { User as UserSupabase } from "@supabase/supabase-js";
 import { AnimatePresence, motion } from "framer-motion";
 import {
+  BrickWall,
   ChevronDown,
-  CreditCard,
-  DollarSign,
-  HeartPulse,
-  Home,
+  Cuboid,
+  LayoutDashboard,
   Menu,
   User,
-  Users,
   X,
 } from "lucide-react";
 import Link from "next/link";
@@ -58,7 +56,9 @@ export default function Navbar({ children }: { children: ReactNode }) {
       <div className="hidden xl:block">
         <NavbarDesktop user={user} />
       </div>
-      <main className="primaryContainer">{children}</main>
+      <div className="bg-slate-800 min-h-screen">
+        <main className="primaryContainer text-white">{children}</main>
+      </div>
     </>
   );
 }
@@ -66,49 +66,31 @@ export default function Navbar({ children }: { children: ReactNode }) {
 function NavbarLinks() {
   return (
     <>
-      <NavbarItem icon={<Home size={14} />} title="Painel" link="/" />
-      <NavbarItem icon={<Users size={14} />} title="Usuários" link="/users" />
-      <NavbarDropdownItem
-        icon={<HeartPulse size={14} />}
-        title="Exames"
-        subItems={[
-          {
-            title: "Exames",
-            link: "/exams",
-          },
-          {
-            title: "Pedidos",
-            link: "/requests",
-          },
-        ]}
-      />
-      <NavbarDropdownItem
-        icon={<DollarSign size={14} />}
-        title="Contabilidade"
-        subItems={[
-          {
-            title: "Entradas",
-            link: "/receivables",
-          },
-          {
-            title: "Saídas",
-            link: "/payables",
-          },
-          {
-            title: "Despesas",
-            link: "/expenses",
-          },
-          {
-            title: "Salários",
-            link: "/salaries",
-          },
-        ]}
+      <NavbarItem
+        icon={<LayoutDashboard size={14} />}
+        title="Painel"
+        link="/dashboard"
       />
       <NavbarItem
-        icon={<CreditCard size={14} />}
-        title="Cartões"
-        link="/cards"
+        icon={<Cuboid size={14} />}
+        title="Habilidades"
+        link="/skills"
       />
+      <NavbarItem
+        icon={<BrickWall size={14} />}
+        title="Experiências"
+        link="/experiences"
+      />
+      {/* <NavbarDropdownItem
+        icon={<HeartPulse size={14} />}
+        title="Testando"
+        subItems={[
+          {
+            title: "Teste",
+            link: "/teste",
+          },
+        ]}
+      /> */}
     </>
   );
 }
@@ -123,7 +105,7 @@ function ProfileButton({ user }: { user: UserSupabase | null }) {
       )}
       <DropdownMenuContent
         side="right"
-        className="p-2 bg-white rounded-t-none text-black hidden md:block"
+        className="p-2 bg-slate-200 rounded-t-none text-black hidden md:block"
       >
         <Link href="/profile">
           <DropdownMenuItem>Perfil</DropdownMenuItem>
@@ -138,11 +120,10 @@ function ProfileButton({ user }: { user: UserSupabase | null }) {
 
 function NavbarDesktop({ user }: { user: UserSupabase | null }) {
   return (
-    <nav className="fixed z-50 flex h-screen w-56 flex-col justify-between bg-white py-5 border-r">
+    <nav className="fixed z-50 flex h-screen w-56 flex-col justify-between bg-slate-200 py-5 border-r">
       <div>
         <div className="leading-none text-center mb-4">
-          <p className="text-[6px]">Clínica</p>
-          <p className="text-mainBlue font-semibold">Incluir</p>
+          <p className="text-xl">BreedResume</p>
         </div>
         <NavbarLinks />
       </div>
@@ -155,11 +136,10 @@ export function NavbarMobile({ user }: { user: UserSupabase | null }) {
   const [opened, setOpened] = useState<boolean>(false);
 
   return (
-    <header className="bg-white fixed top-0 left-0 w-full h-16 flex items-center justify-between px-4 z-50 border-b shrink-0">
+    <header className="bg-slate-200 fixed top-0 left-0 w-full h-16 flex items-center justify-between px-4 z-50 border-b shrink-0">
       <div className="flex flex-row items-center">
         <div className="leading-none">
-          <p className="text-[6px]">Clínica</p>
-          <p className="text-mainBlue font-semibold">Incluir</p>
+          <p className="text-xl font-semibold">BR</p>
         </div>
       </div>
       {opened ? (
@@ -174,7 +154,7 @@ export function NavbarMobile({ user }: { user: UserSupabase | null }) {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -300, opacity: 0 }}
             transition={{ duration: 0.5 }}
-            className={`bg-white fixed py-4 px-6 flex flex-col items-start gap-4 left-0 top-14 rounded-b-lg z-50 w-full ${
+            className={`bg-slate-200 fixed py-4 px-6 flex flex-col items-start gap-4 left-0 top-14 rounded-b-lg z-50 w-full ${
               opened ? "pointer-events-auto" : "pointer-events-none"
             }`}
           >
