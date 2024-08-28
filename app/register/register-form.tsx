@@ -1,5 +1,8 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
 import { register as registerAction } from "./actions";
 
@@ -25,15 +28,20 @@ export function RegisterForm() {
   };
 
   return (
-    <>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <input {...register("email")} />
-        <input {...register("password", { required: true })} />
-        {/* errors will return when field validation fails  */}
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+      <div>
+        <Label>E-mail</Label>
+        <Input {...register("email")} placeholder="E-mail" />
+      </div>
+      <div>
+        <Label>Senha</Label>
+        <Input
+          {...register("password", { required: true })}
+          placeholder="Senha"
+        />
         {errors.password && <span>This field is required</span>}
-
-        <input type="submit" />
-      </form>
-    </>
+      </div>
+      <Button type="submit">Cadastrar</Button>
+    </form>
   );
 }
