@@ -1,7 +1,9 @@
+import { AddAndListSkills } from "./add-list-skills";
+
 export default async function Skills() {
-  // const { data, error } = await supabase.from("skills").select();
-
-  // console.log(data, error);
-
-  return <></>;
+  return (
+    <>
+      <AddAndListSkills />
+    </>
+  );
 }
