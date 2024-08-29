@@ -7,11 +7,6 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { createSkill, deleteSkill, readSkillsByUser } from "./actions";
 
-type DataProps = {
-  title: string;
-  years: string;
-};
-
 export default function Skills() {
   const [skills, setSkills] = useState<SkillProps[]>([]);
 
@@ -38,9 +33,9 @@ export default function Skills() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<DataProps>();
+  } = useForm<SkillProps>();
 
-  async function add(data: DataProps) {
+  async function add(data: SkillProps) {
     const res = await createSkill(data.title, data.years, user!.id);
 
     if (res.error) {
@@ -98,7 +93,7 @@ export default function Skills() {
                   <p>{skill.title}</p>
                   {skill.years && (
                     <p>
-                      {skill.years} {skill.years > 1 ? "anos" : "ano"}
+                      {skill.years} {parseInt(skill.years) > 1 ? "anos" : "ano"}
                     </p>
                   )}
                 </div>

@@ -4,13 +4,16 @@ interface IdAndCreatedProps {
 }
 
 interface ExperienceProps extends IdAndCreatedProps {
-  title: string;
-  years: number;
+  company: string;
+  occupation: string;
+  start_date: string;
+  end_date?: string;
+  description?: string;
   user_id: string;
 }
 
 interface SkillProps extends IdAndCreatedProps {
   title: string;
-  years: number;
+  years: string;
   user_id: string;
 }
