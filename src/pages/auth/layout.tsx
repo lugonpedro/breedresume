@@ -18,7 +18,7 @@ export default function AuthLayout() {
         user: { ...data.user! },
       });
 
-      navigate("/dashboard");
+      navigate("/experiences");
     }
 
     getUser();

@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/services/supabase/client";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 type DataProps = {
   email: string;
@@ -17,7 +17,9 @@ export default function Register() {
     formState: { errors },
   } = useForm<DataProps>();
 
-  async function add(input: DataProps) {
+  const navigate = useNavigate();
+
+  async function signUp(input: DataProps) {
     const { data, error } = await supabase.auth.signUp({
       email: input.email,
       password: input.password,
@@ -27,15 +29,14 @@ export default function Register() {
       // redirect("/error");
     }
 
-    // revalidatePath("/", "layout");
-    // redirect("/dashboard");
+    navigate("/experiences");
   }
 
   return (
-    <div className="bg-slate-100 text-black min-h-screen">
+    <div className="bg-primary text-secondary min-h-screen">
       <div className="p-4 max-w-[800px] mx-auto flex flex-col justify-center h-screen">
         <p className="text-2xl text-center font-semibold">Cadastre-se</p>
-        <form onSubmit={handleSubmit(add)} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit(signUp)} className="flex flex-col gap-4">
           <div>
             <Label>E-mail</Label>
             <Input {...register("email")} placeholder="E-mail" />
@@ -48,7 +49,12 @@ export default function Register() {
             />
             {errors.password && <span>This field is required</span>}
           </div>
-          <Button type="submit">Cadastrar</Button>
+          <Button
+            type="submit"
+            className="bg-secondary text-primary hover:bg-secondary/80"
+          >
+            Cadastrar
+          </Button>
         </form>
         <Link to="/login" className="mt-2 underline text-end">
           Já tenho conta

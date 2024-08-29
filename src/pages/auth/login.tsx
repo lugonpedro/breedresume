@@ -25,18 +25,16 @@ export default function Login() {
       password: input.password,
     });
 
-    console.log(data, error);
-
     if (error) {
       // redirect("/error");
     }
 
-    navigate("/dashboard");
+    navigate("/experiences");
   }
 
   return (
     <>
-      <div className="bg-slate-100 text-black min-h-screen">
+      <div className="bg-primary text-secondary min-h-screen">
         <div className="p-4 max-w-[800px] mx-auto flex flex-col justify-center h-screen">
           <p className="text-2xl text-center font-semibold">Login</p>
           <form onSubmit={handleSubmit(login)} className="flex flex-col gap-4">
@@ -52,9 +50,17 @@ export default function Login() {
               />
               {errors.password && <span>This field is required</span>}
             </div>
-            <Button type="submit">Entrar</Button>
+            <Button
+              type="submit"
+              className="bg-secondary text-primary hover:bg-secondary/80"
+            >
+              Entrar
+            </Button>
           </form>
-          <Link to="/register" className="mt-2 underline text-end">
+          <Link
+            to="/register"
+            className="mt-2 underline text-end text-secondary"
+          >
             Criar Conta
           </Link>
         </div>
