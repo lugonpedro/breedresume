@@ -1,7 +1,7 @@
 import { supabase } from "@/services/supabase/client";
 
 interface ResponseType {
-  data: Skill[];
+  data: SkillProps[];
   error: any;
 }
 

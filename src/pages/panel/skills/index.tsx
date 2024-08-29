@@ -13,7 +13,7 @@ type DataProps = {
 };
 
 export default function Skills() {
-  const [skills, setSkills] = useState<Skill[]>([]);
+  const [skills, setSkills] = useState<SkillProps[]>([]);
 
   const user = authContext((state) => state.user);
 
@@ -51,7 +51,7 @@ export default function Skills() {
     setSkills((prevArray) => [...prevArray, res.data[0]]);
   }
 
-  async function update(skill: Skill) {
+  async function update(skill: SkillProps) {
     // setMyArray(prevArray => prevArray.map(elemento => elemento === elementoParaAtualizar ? novoValor : elemento));
   }
 
