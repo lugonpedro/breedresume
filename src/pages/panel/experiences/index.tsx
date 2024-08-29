@@ -1,9 +1,16 @@
+import { Modal } from "@/components/modal";
 import { SelectMultiInput } from "@/components/select-multi-input";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { authContext } from "@/contexts/auth-context";
+import { formatToDate } from "@/utils/format-to-date";
 import { Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -99,7 +106,14 @@ export default function Experiences() {
 
   return (
     <>
-      <Spinner className="fill-secondary" />
+      <Modal
+        open={false}
+        setOpen={function (bool: boolean): void {
+          throw new Error("Function not implemented.");
+        }}
+        title={""}
+        content={undefined}
+      />
       <form onSubmit={handleSubmit(add)} className="text-secondary">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -161,7 +175,7 @@ export default function Experiences() {
         </Button>
       </form>
       <div className="mt-8">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3 xl:grid-cols-5">
+        <div className="grid grid-cols-1 gap-4">
           {experiences.map((exp) => (
             <div
               key={exp.id}
@@ -171,11 +185,46 @@ export default function Experiences() {
                 <div>
                   <p>{exp.company}</p>
                   <p>{exp.occupation}</p>
-                  <div>
-                    <p>{exp.start_date}</p>
-                    <p>{exp.end_date}</p>
+                  <div className="flex gap-1">
+                    <p>{formatToDate(exp.start_date, "date")?.substring(3)}</p>
+                    <span> - </span>
+                    <p>
+                      {exp.end_date
+                        ? formatToDate(exp.end_date, "date")?.substring(3)
+                        : "Presente"}
+                    </p>
                   </div>
-                  {exp.description && <p>{exp.description}</p>}
+                  <div className="flex flex-row gap-2 mt-4">
+                    {exp.description && (
+                      <Popover>
+                        <PopoverTrigger>
+                          <Button className="bg-secondary text-primary hover:bg-secondary/80">
+                            Descrição
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent side="top">
+                          {exp.description}
+                        </PopoverContent>
+                      </Popover>
+                    )}
+                    {exp.skills.length > 0 && (
+                      <Popover>
+                        <PopoverTrigger>
+                          <Button className="bg-secondary text-primary hover:bg-secondary/80">
+                            Habilidades
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent side="top">
+                          {exp.skills.map((skill, index) => (
+                            <span>
+                              {skill.title}
+                              {index < exp.skills.length - 1 && ", "}
+                            </span>
+                          ))}
+                        </PopoverContent>
+                      </Popover>
+                    )}
+                  </div>
                 </div>
                 <div className="self-end">
                   <Trash
