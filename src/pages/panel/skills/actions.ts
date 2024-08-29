@@ -7,14 +7,14 @@ interface ResponseType {
 
 export async function createSkill(
   title: string,
-  years: number,
+  years: string,
   user_id: string
 ) {
   const { data, error } = await supabase
     .from("skills")
     .insert({
       title,
-      years: years ?? 0,
+      years: years.length > 0 ? parseInt(years) : 1,
       user_id,
     })
     .select();
