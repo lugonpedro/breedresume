@@ -1,3 +1,9 @@
+interface SelectObjectProps {
+  label: string;
+  value: string;
+  [key: string]: any;
+}
+
 interface IdAndCreatedProps {
   id: number;
   created_at: string;
