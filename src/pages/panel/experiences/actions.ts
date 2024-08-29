@@ -53,7 +53,7 @@ export async function readExperiencesByUser(user_id: string) {
     .from("experiences")
     .select("*, skills (title)")
     .eq("user_id", user_id)
-    .order("id", { ascending: true });
+    .order("start_date", { ascending: false });
 
   return { data, error } as ResponseType;
 }
