@@ -6,16 +6,16 @@ interface ResponseType {
 }
 
 export async function createSkill(
+  user_id: string,
   title: string,
-  years: string,
-  user_id: string
+  years: string
 ) {
   const { data, error } = await supabase
     .from("skills")
     .insert({
-      title,
-      years: years.length > 0 ? parseInt(years) : 1,
       user_id,
+      title,
+      years: years.length > 0 ? parseInt(years) : null,
     })
     .select();
 
@@ -32,12 +32,12 @@ export async function readSkillsByUser(user_id: string) {
   return { data, error } as ResponseType;
 }
 
-export async function updateSkill(id: string, title: string, years: number) {
+export async function updateSkill(id: string, title: string, years: string) {
   const { data, error } = await supabase
     .from("skills")
     .update({
       title,
-      years: years ?? 0,
+      years: years.length > 0 ? parseInt(years) : null,
     })
     .eq("id", id)
     .select();

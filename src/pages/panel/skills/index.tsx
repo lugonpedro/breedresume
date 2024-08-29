@@ -36,7 +36,7 @@ export default function Skills() {
   } = useForm<SkillProps>();
 
   async function add(data: SkillProps) {
-    const res = await createSkill(data.title, data.years, user!.id);
+    const res = await createSkill(user!.id, data.title, data.years);
 
     if (res.error) {
       return;
