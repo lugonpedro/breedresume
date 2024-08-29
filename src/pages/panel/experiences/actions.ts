@@ -12,7 +12,7 @@ export async function createExperience(
   start_date: string,
   end_date: string,
   description: string,
-  skills_in_experience: SkillsInExperienceProps[]
+  skills_in_experience: string[]
 ) {
   const { data, error } = await supabase
     .from("experiences")
@@ -26,8 +26,16 @@ export async function createExperience(
     })
     .select();
 
+  if (error) {
+    return { data, error };
+  }
+
   if (skills_in_experience.length > 0) {
-    await supabase.from("skills_in_experience").insert(skills_in_experience);
+    let formattedSkills = skills_in_experience.map((skill) => {
+      return { skill_id: skill, experience_id: data[0].id };
+    });
+
+    await supabase.from("skills_in_experience").insert(formattedSkills);
   }
 
   return { data, error } as ResponseType;
@@ -36,11 +44,9 @@ export async function createExperience(
 export async function readExperiencesByUser(user_id: string) {
   const { data, error } = await supabase
     .from("experiences")
-    .select("*, skills_in_experience(*)")
+    .select("*, skills (title)")
     .eq("user_id", user_id)
     .order("id", { ascending: true });
-
-  console.log(data);
 
   return { data, error } as ResponseType;
 }

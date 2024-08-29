@@ -1,3 +1,4 @@
+import { SelectMultiInput } from "@/components/select-multi-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -5,6 +6,7 @@ import { authContext } from "@/contexts/auth-context";
 import { Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { readSkillsByUser } from "../skills/actions";
 import {
   createExperience,
   deleteExperience,
@@ -13,6 +15,10 @@ import {
 
 export default function Experiences() {
   const [experiences, setExperiences] = useState<ExperienceProps[]>([]);
+
+  const [skills, setSkills] = useState<SelectObjectProps[]>([]);
+
+  const [skillsInExperience, setSkillsInExperience] = useState<string[]>([]);
 
   const user = authContext((state) => state.user);
 
@@ -24,13 +30,26 @@ export default function Experiences() {
         return;
       }
 
-      console.log(res.data);
+      setExperiences(res.data!);
+    }
 
-      setExperiences(res.data);
+    async function readAllSkills() {
+      const res = await readSkillsByUser(user!.id);
+
+      if (res.error) {
+        return;
+      }
+
+      let formattedSkills = res.data.map((skill) => {
+        return { value: `${skill.id}`, label: skill.title };
+      });
+
+      setSkills(formattedSkills);
     }
 
     if (user) {
       readAll();
+      readAllSkills();
     }
   }, [user]);
 
@@ -38,7 +57,7 @@ export default function Experiences() {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { isLoading, errors },
   } = useForm<ExperienceProps>();
 
   async function add(data: ExperienceProps) {
@@ -49,17 +68,15 @@ export default function Experiences() {
       data.start_date,
       data.end_date,
       data.description,
-      data.skills_in_experience
+      skillsInExperience
     );
-
-    console.log(res);
 
     if (res.error) {
       return;
     }
 
     reset();
-    setExperiences((prevArray) => [...prevArray, res.data[0]]);
+    setExperiences((prevArray) => [...prevArray, res.data![0]]);
   }
 
   async function update(skill: SkillProps) {
@@ -86,6 +103,7 @@ export default function Experiences() {
               {...register("company", { required: true })}
               placeholder="Empresa"
             />
+            {errors.company && <></>}
           </div>
           <div>
             <Label>Posição</Label>
@@ -93,6 +111,7 @@ export default function Experiences() {
               {...register("occupation", { required: true })}
               placeholder="Posição"
             />
+            {errors.occupation && <></>}
           </div>
           <div>
             <Label>Data de início</Label>
@@ -101,6 +120,7 @@ export default function Experiences() {
               placeholder="Data de início"
               type="date"
             />
+            {errors.company && <></>}
           </div>
           <div>
             <Label>Data de fim</Label>
@@ -109,10 +129,22 @@ export default function Experiences() {
               placeholder="Data de fim"
               type="date"
             />
+            {errors.company && <></>}
+          </div>
+          <div>
+            <Label>Habilidades</Label>
+            <SelectMultiInput
+              options={skills}
+              value={skillsInExperience}
+              onChange={setSkillsInExperience}
+              placeholder="Habilidades"
+            />
+            {errors.company && <></>}
           </div>
           <div>
             <Label>Descrição</Label>
             <Input {...register("description")} placeholder="Descrição" />
+            {errors.company && <></>}
           </div>
         </div>
         <Button
