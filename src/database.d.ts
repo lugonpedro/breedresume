@@ -16,16 +16,11 @@ interface ExperienceProps extends IdAndCreatedProps {
   end_date: string;
   description: string;
   user_id: string;
-  skills_in_experience: SkillsInExperienceProps[];
+  skills: SkillProps[];
 }
 
 interface SkillProps extends IdAndCreatedProps {
   title: string;
   years: string;
   user_id: string;
-}
-
-interface SkillsInExperienceProps extends IdAndCreatedProps {
-  experience_id: string;
-  skill_id: string;
 }
