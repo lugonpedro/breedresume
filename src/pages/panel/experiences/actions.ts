@@ -14,7 +14,7 @@ export async function createExperience(
   description: string,
   skills_in_experience: string[]
 ) {
-  const { data, error } = await supabase
+  const { data: experienceData, error: errorData } = await supabase
     .from("experiences")
     .insert({
       user_id,
@@ -26,17 +26,24 @@ export async function createExperience(
     })
     .select();
 
-  if (error) {
-    return { data, error };
+  if (errorData) {
+    return { data: experienceData, error: errorData };
   }
 
   if (skills_in_experience.length > 0) {
-    let formattedSkills = skills_in_experience.map((skill) => {
-      return { skill_id: skill, experience_id: data[0].id };
-    });
-
-    await supabase.from("skills_in_experience").insert(formattedSkills);
+    await createSkillsInExperience(skills_in_experience, experienceData[0].id);
   }
+
+  const { data, error } = await readExperienceById(experienceData[0].id);
+
+  return { data, error };
+}
+
+export async function readExperienceById(id: string) {
+  const { data, error } = await supabase
+    .from("experiences")
+    .select("*, skills (title)")
+    .eq("id", id);
 
   return { data, error } as ResponseType;
 }
@@ -82,4 +89,21 @@ export async function deleteExperience(id: number) {
     .select();
 
   return { data, error } as ResponseType;
+}
+
+async function createSkillsInExperience(
+  skills: string[],
+  experience_id: string
+) {
+  let formattedSkills = skills.map((skill) => {
+    return { skill_id: skill, experience_id };
+  });
+
+  const { data: dataSkills, error: errorSkills } = await supabase
+    .from("skills_in_experience")
+    .insert(formattedSkills);
+
+  if (errorSkills) {
+    return { dataSkills, errorSkills };
+  }
 }

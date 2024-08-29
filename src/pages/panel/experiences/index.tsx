@@ -1,4 +1,5 @@
 import { SelectMultiInput } from "@/components/select-multi-input";
+import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,6 +31,7 @@ export default function Experiences() {
         return;
       }
 
+      console.log(res.data);
       setExperiences(res.data!);
     }
 
@@ -71,11 +73,13 @@ export default function Experiences() {
       skillsInExperience
     );
 
+    console.log(res);
     if (res.error) {
       return;
     }
 
     reset();
+    setSkillsInExperience([]);
     setExperiences((prevArray) => [...prevArray, res.data![0]]);
   }
 
@@ -95,6 +99,7 @@ export default function Experiences() {
 
   return (
     <>
+      <Spinner className="fill-secondary" />
       <form onSubmit={handleSubmit(add)} className="text-secondary">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -150,8 +155,9 @@ export default function Experiences() {
         <Button
           type="submit"
           className="bg-secondary text-primary hover:bg-secondary/80 mt-4"
+          disabled={isLoading}
         >
-          Adicionar
+          {isLoading ? <Spinner className="fill-primary" /> : "Adicionar"}
         </Button>
       </form>
       <div className="mt-8">
