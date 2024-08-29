@@ -22,6 +22,15 @@ export async function createSkill(
   return { data, error } as ResponseType;
 }
 
+export async function readSkillById(id: string) {
+  const { data, error } = await supabase
+    .from("skills")
+    .select("*")
+    .eq("id", id);
+
+  return { data, error } as ResponseType;
+}
+
 export async function readSkillsByUser(user_id: string) {
   const { data, error } = await supabase
     .from("skills")
