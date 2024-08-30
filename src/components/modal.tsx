@@ -12,7 +12,7 @@ interface ModalProps {
   open: boolean;
   setOpen: (bool: boolean) => void;
   title: string;
-  description?: string;
+  description: string;
   content: ReactNode;
   footer?: ReactNode;
 }
@@ -27,10 +27,12 @@ export function Modal({
 }: ModalProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="w-[90vw]">
+      <DialogContent className="w-[90vw] bg-secondary text-primary">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          {description && <DialogDescription>{description}</DialogDescription>}
+          <DialogDescription className="text-secondary-foreground">
+            {description}
+          </DialogDescription>
         </DialogHeader>
         {content}
         {footer && <DialogFooter>{footer}</DialogFooter>}
