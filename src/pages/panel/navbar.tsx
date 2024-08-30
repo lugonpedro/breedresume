@@ -10,7 +10,15 @@ import { supabase } from "@/services/supabase/client";
 import { logout } from "@/services/supabase/log-out";
 import { User as UserSupabase } from "@supabase/supabase-js";
 import { AnimatePresence, motion } from "framer-motion";
-import { BrickWall, ChevronDown, Cuboid, Menu, User, X } from "lucide-react";
+import {
+  BrickWall,
+  ChevronDown,
+  Cuboid,
+  FileText,
+  Menu,
+  User,
+  X,
+} from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 
@@ -68,14 +76,19 @@ function NavbarLinks() {
   return (
     <>
       <NavbarItem
+        icon={<Cuboid size={14} />}
+        title="Habilidades"
+        link="/skills"
+      />
+      <NavbarItem
         icon={<BrickWall size={14} />}
         title="Experiências"
         link="/experiences"
       />
       <NavbarItem
-        icon={<Cuboid size={14} />}
-        title="Habilidades"
-        link="/skills"
+        icon={<FileText size={14} />}
+        title="PDF"
+        link="/generate-pdf"
       />
     </>
   );
