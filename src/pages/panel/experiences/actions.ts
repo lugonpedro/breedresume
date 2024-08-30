@@ -42,7 +42,7 @@ export async function createExperience(
 export async function readExperienceById(id: string) {
   const { data, error } = await supabase
     .from("experiences")
-    .select("*, skills (title)")
+    .select("*, skills (id, title)")
     .eq("id", id);
 
   return { data, error } as ResponseType;
@@ -51,7 +51,7 @@ export async function readExperienceById(id: string) {
 export async function readExperiencesByUser(user_id: string) {
   const { data, error } = await supabase
     .from("experiences")
-    .select("*, skills (title)")
+    .select("*, skills (id, title)")
     .eq("user_id", user_id)
     .order("start_date", { ascending: false });
 
