@@ -1,13 +1,12 @@
 import { formatToDate } from "@/utils/format-to-date";
 import { Pencil, Trash } from "lucide-react";
 import { IconButton } from "./icon-button";
-import { Button } from "./ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
 interface ExperienceCardProps {
   exp: ExperienceProps;
   onEdit: (exp: ExperienceProps) => void;
-  onRemove: (id: number) => void;
+  onRemove: (exp: ExperienceProps) => void;
 }
 
 export function ExperienceCard({ exp, onEdit, onRemove }: ExperienceCardProps) {
@@ -29,24 +28,20 @@ export function ExperienceCard({ exp, onEdit, onRemove }: ExperienceCardProps) {
           <div className="flex flex-row gap-2 mt-4">
             {exp.description && (
               <Popover>
-                <PopoverTrigger>
-                  <Button className="bg-secondary text-primary hover:bg-secondary/80">
-                    Descrição
-                  </Button>
+                <PopoverTrigger className="text-secondary hover:underline duration-300">
+                  Descrição
                 </PopoverTrigger>
                 <PopoverContent side="top">{exp.description}</PopoverContent>
               </Popover>
             )}
             {exp.skills.length > 0 && (
               <Popover>
-                <PopoverTrigger>
-                  <Button className="bg-secondary text-primary hover:bg-secondary/80">
-                    Habilidades
-                  </Button>
+                <PopoverTrigger className="text-secondary hover:underline duration-300">
+                  Habilidades
                 </PopoverTrigger>
                 <PopoverContent side="top">
                   {exp.skills.map((skill, index) => (
-                    <span>
+                    <span key={skill.id}>
                       {skill.title}
                       {index < exp.skills.length - 1 && ", "}
                     </span>
@@ -57,11 +52,11 @@ export function ExperienceCard({ exp, onEdit, onRemove }: ExperienceCardProps) {
           </div>
         </div>
         <div className="flex gap-2">
-          <IconButton>
-            <Pencil onClick={() => onEdit(exp)} className="text-black" />
+          <IconButton onClick={() => onEdit(exp)}>
+            <Pencil className="text-black" />
           </IconButton>
-          <IconButton>
-            <Trash onClick={() => onRemove(exp.id)} className="text-red-500" />
+          <IconButton onClick={() => onRemove(exp)}>
+            <Trash className="text-red-500" />
           </IconButton>
         </div>
       </div>

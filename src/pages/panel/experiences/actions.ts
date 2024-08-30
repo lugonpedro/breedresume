@@ -59,26 +59,42 @@ export async function readExperiencesByUser(user_id: string) {
 }
 
 export async function updateExperience(
-  id: string,
+  id: number,
   company: string,
   occupation: string,
   start_date: string,
   end_date: string,
-  description: string
+  description: string,
+  previous_skills_in_experience: string[],
+  skills_in_experience: string[]
 ) {
-  const { data, error } = await supabase
+  const { data: experienceData, error: errorData } = await supabase
     .from("experiences")
     .update({
       company,
       occupation,
       start_date,
-      end_date: end_date.length > 0 ? end_date : null,
-      description: description.length > 0 ? description : null,
+      end_date: end_date ?? null,
+      description: description ?? null,
     })
     .eq("id", id)
     .select();
 
-  return { data, error } as ResponseType;
+  if (errorData) {
+    return { data: experienceData, error: errorData };
+  }
+
+  if (skills_in_experience.length > 0) {
+    await updateSkillsInExperience(
+      previous_skills_in_experience,
+      skills_in_experience,
+      experienceData[0].id
+    );
+  }
+
+  const { data, error } = await readExperienceById(experienceData[0].id);
+
+  return { data, error };
 }
 
 export async function deleteExperience(id: number) {
@@ -102,6 +118,30 @@ async function createSkillsInExperience(
   const { data: dataSkills, error: errorSkills } = await supabase
     .from("skills_in_experience")
     .insert(formattedSkills);
+
+  if (errorSkills) {
+    return { dataSkills, errorSkills };
+  }
+}
+
+async function updateSkillsInExperience(
+  previousSkills: string[],
+  skills: string[],
+  experience_id: string
+) {
+  const addedSkills = skills.filter((skill) => !previousSkills.includes(skill));
+
+  await createSkillsInExperience(addedSkills, experience_id);
+
+  const removedSkills = previousSkills.filter(
+    (skill) => !skills.includes(skill)
+  );
+
+  const { data: dataSkills, error: errorSkills } = await supabase
+    .from("skills_in_experience")
+    .delete()
+    .eq("experience_id", experience_id)
+    .in("skill_id", removedSkills);
 
   if (errorSkills) {
     return { dataSkills, errorSkills };

@@ -1,7 +1,9 @@
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { ExperienceCard } from "@/components/experience-card";
 import { Modal } from "@/components/modal";
 import { SelectMultiInput } from "@/components/select-multi-input";
 import { Spinner } from "@/components/spinner";
+import { TextArea } from "@/components/text-area";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,14 +15,23 @@ import {
   createExperience,
   deleteExperience,
   readExperiencesByUser,
+  updateExperience,
 } from "./actions";
 
 export default function Experiences() {
   const [experiences, setExperiences] = useState<ExperienceProps[]>([]);
-
   const [skills, setSkills] = useState<SelectObjectProps[]>([]);
 
   const [skillsInExperience, setSkillsInExperience] = useState<string[]>([]);
+  const [previousEditSkillsInExperience, setPreviousEditSkillsInExperience] =
+    useState<string[]>([]);
+  const [editSkillsInExperience, setEditSkillsInExperience] = useState<
+    string[]
+  >([]);
+
+  const [selectedExp, setSelectedExp] = useState<ExperienceProps | undefined>();
+  const [editModal, setEditModal] = useState<boolean>(false);
+  const [removeDialog, setRemoveDialog] = useState<boolean>(false);
 
   const user = authContext((state) => state.user);
 
@@ -32,7 +43,6 @@ export default function Experiences() {
         return;
       }
 
-      console.log(res.data);
       setExperiences(res.data!);
     }
 
@@ -74,7 +84,6 @@ export default function Experiences() {
       skillsInExperience
     );
 
-    console.log(res);
     if (res.error) {
       return;
     }
@@ -84,34 +93,154 @@ export default function Experiences() {
     setExperiences((prevArray) => [...prevArray, res.data![0]]);
   }
 
-  async function update(experience: ExperienceProps) {
-    console.log(experience);
-    // setMyArray(prevArray => prevArray.map(elemento => elemento === elementoParaAtualizar ? novoValor : elemento));
+  const {
+    register: registerUpdate,
+    handleSubmit: handleSubmitUpdate,
+    formState: { isLoading: isLoadingUpdate, errors: errorsUpdate },
+  } = useForm<ExperienceProps>({
+    values: selectedExp,
+  });
+
+  function handleUpdate(exp: ExperienceProps) {
+    setSelectedExp(exp);
+    let formattedSkills = exp.skills.map((skill) => {
+      return skill.id.toString();
+    });
+    setPreviousEditSkillsInExperience(formattedSkills);
+    setEditSkillsInExperience(formattedSkills);
+    setEditModal(true);
+  }
+
+  async function update(data: ExperienceProps) {
+    const res = await updateExperience(
+      data.id,
+      data.company,
+      data.occupation,
+      data.start_date,
+      data.end_date,
+      data.description,
+      previousEditSkillsInExperience,
+      editSkillsInExperience
+    );
+
+    if (res.error) {
+      return;
+    }
+
+    setPreviousEditSkillsInExperience([]);
+    setEditSkillsInExperience([]);
+    setEditModal(false);
+    setSelectedExp(undefined);
+    setExperiences((prevArray) =>
+      prevArray.map((el) => (el.id === data.id ? res.data![0] : el))
+    );
+  }
+
+  function handleRemove(exp: ExperienceProps) {
+    setSelectedExp(exp);
+    setRemoveDialog(true);
   }
 
   async function remove(id: number) {
-    console.log(id);
-
-    return;
-
     const res = await deleteExperience(id);
 
     if (res.error) {
       return;
     }
 
+    setSelectedExp(undefined);
     setExperiences((prevArray) => prevArray.filter((el) => el.id !== id));
   }
 
   return (
     <>
       <Modal
-        open={false}
-        setOpen={function (bool: boolean): void {
-          throw new Error("Function not implemented.");
-        }}
-        title={""}
-        content={undefined}
+        open={editModal}
+        setOpen={() => setEditModal(!editModal)}
+        title="Editar Experiência"
+        description={`${selectedExp?.company} - ${selectedExp?.occupation}`}
+        content={
+          <>
+            <form
+              onSubmit={handleSubmitUpdate(update)}
+              className="text-primary"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Empresa</Label>
+                  <Input
+                    {...registerUpdate("company", { required: true })}
+                    placeholder="Empresa"
+                  />
+                  {errorsUpdate.company && <></>}
+                </div>
+                <div>
+                  <Label>Posição</Label>
+                  <Input
+                    {...registerUpdate("occupation", { required: true })}
+                    placeholder="Posição"
+                  />
+                  {errorsUpdate.occupation && <></>}
+                </div>
+                <div>
+                  <Label>Data de início</Label>
+                  <Input
+                    {...registerUpdate("start_date", { required: true })}
+                    placeholder="Data de início"
+                    type="date"
+                  />
+                  {errorsUpdate.company && <></>}
+                </div>
+                <div>
+                  <Label>Data de fim</Label>
+                  <Input
+                    {...registerUpdate("end_date")}
+                    placeholder="Data de fim"
+                    type="date"
+                  />
+                  {errorsUpdate.company && <></>}
+                </div>
+                <div className="md:col-span-2">
+                  <Label>Habilidades</Label>
+                  <SelectMultiInput
+                    options={skills}
+                    value={editSkillsInExperience}
+                    onChange={setEditSkillsInExperience}
+                    placeholder="Habilidades"
+                  />
+                  {errorsUpdate.company && <></>}
+                </div>
+                <div className="md:col-span-2">
+                  <Label>Descrição</Label>
+                  <TextArea
+                    {...registerUpdate("description")}
+                    placeholder="Descrição"
+                  />
+                  {errorsUpdate.company && <></>}
+                </div>
+              </div>
+              <Button
+                type="submit"
+                className="w-full mt-4 bg-secondary text-primary hover:bg-secondary/80 md:w-max"
+                disabled={isLoadingUpdate}
+              >
+                {isLoadingUpdate ? (
+                  <Spinner className="fill-primary" />
+                ) : (
+                  "Salvar"
+                )}
+              </Button>
+            </form>
+          </>
+        }
+      />
+      <ConfirmDialog
+        open={removeDialog}
+        onOpenChange={() => setRemoveDialog(!removeDialog)}
+        title={`Remover ${selectedExp?.company} - ${selectedExp?.occupation}`}
+        description="Essa ação não pode ser desfeita"
+        proceedText="Remover"
+        proceedFn={() => remove(selectedExp!.id)}
       />
       <form onSubmit={handleSubmit(add)} className="text-secondary">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -149,7 +278,7 @@ export default function Experiences() {
             />
             {errors.company && <></>}
           </div>
-          <div>
+          <div className="md:col-span-2">
             <Label>Habilidades</Label>
             <SelectMultiInput
               options={skills}
@@ -159,15 +288,15 @@ export default function Experiences() {
             />
             {errors.company && <></>}
           </div>
-          <div>
+          <div className="md:col-span-2">
             <Label>Descrição</Label>
-            <Input {...register("description")} placeholder="Descrição" />
+            <TextArea {...register("description")} placeholder="Descrição" />
             {errors.company && <></>}
           </div>
         </div>
         <Button
           type="submit"
-          className="bg-secondary text-primary hover:bg-secondary/80 mt-4"
+          className="w-full mt-4 bg-secondary text-primary hover:bg-secondary/80 md:w-max"
           disabled={isLoading}
         >
           {isLoading ? <Spinner className="fill-primary" /> : "Adicionar"}
@@ -176,7 +305,12 @@ export default function Experiences() {
       <div className="mt-8">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {experiences.map((exp) => (
-            <ExperienceCard exp={exp} onEdit={update} onRemove={remove} />
+            <ExperienceCard
+              key={exp.id}
+              exp={exp}
+              onEdit={handleUpdate}
+              onRemove={handleRemove}
+            />
           ))}
         </div>
       </div>
