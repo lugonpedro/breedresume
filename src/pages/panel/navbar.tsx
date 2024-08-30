@@ -10,15 +10,7 @@ import { supabase } from "@/services/supabase/client";
 import { logout } from "@/services/supabase/log-out";
 import { User as UserSupabase } from "@supabase/supabase-js";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  BrickWall,
-  ChevronDown,
-  Cuboid,
-  FileText,
-  Menu,
-  User,
-  X,
-} from "lucide-react";
+import { BrickWall, Cuboid, FileText, Menu, User, X } from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 
@@ -44,7 +36,7 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    const unsub = authContext.subscribe((state, prevState) => {
+    const unsub = authContext.subscribe((state) => {
       if (state.user === null) {
         navigate("/login");
       }
@@ -58,7 +50,7 @@ export default function Navbar() {
   return (
     <>
       <div className="xl:hidden">
-        <NavbarMobile user={user} />
+        <NavbarMobile />
       </div>
       <div className="hidden xl:block">
         <NavbarDesktop user={user} />
@@ -131,7 +123,7 @@ function NavbarDesktop({ user }: { user: UserSupabase | null }) {
   );
 }
 
-function NavbarMobile({ user }: { user: UserSupabase | null }) {
+function NavbarMobile() {
   const [opened, setOpened] = useState<boolean>(false);
 
   return (
@@ -214,137 +206,137 @@ function NavbarItem(props: NavbarItemProps) {
   );
 }
 
-interface NavbarDropdownItemProps {
-  icon: ReactNode;
-  title: string;
-  subItems: {
-    title: string;
-    link?: string;
-    onClick?: () => void;
-  }[];
-}
+// interface NavbarDropdownItemProps {
+//   icon: ReactNode;
+//   title: string;
+//   subItems: {
+//     title: string;
+//     link?: string;
+//     onClick?: () => void;
+//   }[];
+// }
 
-function NavbarDropdownItem(props: NavbarDropdownItemProps) {
-  const [opened, setOpened] = useState<boolean>(false);
-  const [actualPage, setActualPage] = useState<string>("");
+// function NavbarDropdownItem(props: NavbarDropdownItemProps) {
+//   const [opened, setOpened] = useState<boolean>(false);
+//   const [actualPage, setActualPage] = useState<string>("");
 
-  useEffect(() => {
-    let origin = window.location.pathname.split("/");
-    setActualPage(`/${origin[1]}${origin[2] ? `/${origin[2]}` : ""}`);
-  }, []);
+//   useEffect(() => {
+//     let origin = window.location.pathname.split("/");
+//     setActualPage(`/${origin[1]}${origin[2] ? `/${origin[2]}` : ""}`);
+//   }, []);
 
-  useEffect(() => {
-    let origin = window.location.pathname.split("/");
+//   useEffect(() => {
+//     let origin = window.location.pathname.split("/");
 
-    let formattedPath = `/${origin[1]}/${origin[2]}`;
+//     let formattedPath = `/${origin[1]}/${origin[2]}`;
 
-    function hasFormattedPath(subItem: {
-      title: string;
-      link?: string;
-      icon?: ReactNode;
-      onClick?: () => void;
-    }) {
-      if (subItem.link) {
-        let splittedLink = subItem.link?.split("/");
-        const formattedLink = `/${splittedLink![1]}/${splittedLink![2]}`;
-        return formattedLink === formattedPath;
-      }
-    }
+//     function hasFormattedPath(subItem: {
+//       title: string;
+//       link?: string;
+//       icon?: ReactNode;
+//       onClick?: () => void;
+//     }) {
+//       if (subItem.link) {
+//         let splittedLink = subItem.link?.split("/");
+//         const formattedLink = `/${splittedLink![1]}/${splittedLink![2]}`;
+//         return formattedLink === formattedPath;
+//       }
+//     }
 
-    if (props.subItems.find(hasFormattedPath)) {
-      setOpened(true);
-    }
-  }, [props.subItems]);
+//     if (props.subItems.find(hasFormattedPath)) {
+//       setOpened(true);
+//     }
+//   }, [props.subItems]);
 
-  const menuAnimation = {
-    hidden: {
-      opacity: 0,
-      height: 0,
-      padding: 0,
-      transition: { duration: 0.3, when: "afterChildren" },
-    },
-    show: {
-      opacity: 1,
-      height: "auto",
-      transition: {
-        duration: 0.3,
-        when: "beforeChildren",
-      },
-    },
-  };
-  const menuItemAnimation = {
-    hidden: (i: number) => ({
-      padding: 0,
-      x: "-1000%",
-      transition: {
-        duration: (i + 1) * 0.1,
-      },
-    }),
-    show: (i: number) => ({
-      x: 0,
-      transition: {
-        duration: (i + 1) * 0.1,
-      },
-    }),
-  };
+//   const menuAnimation = {
+//     hidden: {
+//       opacity: 0,
+//       height: 0,
+//       padding: 0,
+//       transition: { duration: 0.3, when: "afterChildren" },
+//     },
+//     show: {
+//       opacity: 1,
+//       height: "auto",
+//       transition: {
+//         duration: 0.3,
+//         when: "beforeChildren",
+//       },
+//     },
+//   };
+//   const menuItemAnimation = {
+//     hidden: (i: number) => ({
+//       padding: 0,
+//       x: "-1000%",
+//       transition: {
+//         duration: (i + 1) * 0.1,
+//       },
+//     }),
+//     show: (i: number) => ({
+//       x: 0,
+//       transition: {
+//         duration: (i + 1) * 0.1,
+//       },
+//     }),
+//   };
 
-  return (
-    <>
-      <button
-        onClick={() => setOpened(!opened)}
-        className="flex w-full flex-row items-center justify-between gap-2 px-3 py-2 text-primary duration-300 hover:bg-mainBlue/30"
-      >
-        <div className="flex items-center gap-2">
-          {props.icon}
-          <p className="text-sm">{props.title}</p>
-        </div>
-        <motion.div
-          animate={{
-            rotate: opened ? 0 : -90,
-          }}
-          initial={{
-            rotate: -90,
-          }}
-        >
-          <ChevronDown size={16} />
-        </motion.div>
-      </button>
-      <AnimatePresence>
-        {opened && (
-          <motion.div
-            variants={menuAnimation}
-            initial="hidden"
-            animate="show"
-            exit="hidden"
-            className="flex w-full flex-col"
-          >
-            {props.subItems.map((subItem, i) => (
-              <motion.div variants={menuItemAnimation} key={i} custom={i}>
-                {subItem.link && (
-                  <Link
-                    to={subItem.link}
-                    className={`flex w-full items-center px-8 py-2 text-primary duration-300 hover:bg-mainBlue/30 ${
-                      actualPage === subItem.link || actualPage === subItem.link
-                        ? "bg-mainBlue/30 hover:bg-mainBlue/30"
-                        : ""
-                    }`}
-                  >
-                    <p className="text-sm text-primary">{subItem.title}</p>
-                  </Link>
-                )}
-                {!subItem.link && (
-                  <div
-                    className="flex w-full px-4 py-2 text-primary duration-300 hover:bg-mainBlue/30"
-                    onClick={subItem.onClick}
-                  >
-                    {subItem.title}
-                  </div>
-                )}
-              </motion.div>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
-  );
-}
+//   return (
+//     <>
+//       <button
+//         onClick={() => setOpened(!opened)}
+//         className="flex w-full flex-row items-center justify-between gap-2 px-3 py-2 text-primary duration-300 hover:bg-mainBlue/30"
+//       >
+//         <div className="flex items-center gap-2">
+//           {props.icon}
+//           <p className="text-sm">{props.title}</p>
+//         </div>
+//         <motion.div
+//           animate={{
+//             rotate: opened ? 0 : -90,
+//           }}
+//           initial={{
+//             rotate: -90,
+//           }}
+//         >
+//           <ChevronDown size={16} />
+//         </motion.div>
+//       </button>
+//       <AnimatePresence>
+//         {opened && (
+//           <motion.div
+//             variants={menuAnimation}
+//             initial="hidden"
+//             animate="show"
+//             exit="hidden"
+//             className="flex w-full flex-col"
+//           >
+//             {props.subItems.map((subItem, i) => (
+//               <motion.div variants={menuItemAnimation} key={i} custom={i}>
+//                 {subItem.link && (
+//                   <Link
+//                     to={subItem.link}
+//                     className={`flex w-full items-center px-8 py-2 text-primary duration-300 hover:bg-mainBlue/30 ${
+//                       actualPage === subItem.link || actualPage === subItem.link
+//                         ? "bg-mainBlue/30 hover:bg-mainBlue/30"
+//                         : ""
+//                     }`}
+//                   >
+//                     <p className="text-sm text-primary">{subItem.title}</p>
+//                   </Link>
+//                 )}
+//                 {!subItem.link && (
+//                   <div
+//                     className="flex w-full px-4 py-2 text-primary duration-300 hover:bg-mainBlue/30"
+//                     onClick={subItem.onClick}
+//                   >
+//                     {subItem.title}
+//                   </div>
+//                 )}
+//               </motion.div>
+//             ))}
+//           </motion.div>
+//         )}
+//       </AnimatePresence>
+//     </>
+//   );
+// }

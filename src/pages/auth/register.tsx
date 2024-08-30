@@ -20,7 +20,7 @@ export default function Register() {
   const navigate = useNavigate();
 
   async function signUp(input: DataProps) {
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email: input.email,
       password: input.password,
     });

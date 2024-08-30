@@ -28,12 +28,7 @@ export default function Skills() {
     }
   }, [user]);
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<SkillProps>();
+  const { register, handleSubmit, reset } = useForm<SkillProps>();
 
   async function add(data: SkillProps) {
     const res = await createSkill(user!.id, data.title, data.years);
@@ -46,9 +41,9 @@ export default function Skills() {
     setSkills((prevArray) => [...prevArray, res.data[0]]);
   }
 
-  async function update(skill: SkillProps) {
-    // setMyArray(prevArray => prevArray.map(elemento => elemento === elementoParaAtualizar ? novoValor : elemento));
-  }
+  // async function update(skill: SkillProps) {
+  //   // setMyArray(prevArray => prevArray.map(elemento => elemento === elementoParaAtualizar ? novoValor : elemento));
+  // }
 
   async function remove(id: number) {
     const res = await deleteSkill(id);

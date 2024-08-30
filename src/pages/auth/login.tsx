@@ -20,7 +20,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   async function login(input: DataProps) {
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email: input.email,
       password: input.password,
     });
