@@ -1,17 +1,11 @@
+import { ExperienceCard } from "@/components/experience-card";
 import { Modal } from "@/components/modal";
 import { SelectMultiInput } from "@/components/select-multi-input";
 import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { authContext } from "@/contexts/auth-context";
-import { formatToDate } from "@/utils/format-to-date";
-import { Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { readSkillsByUser } from "../skills/actions";
@@ -90,11 +84,16 @@ export default function Experiences() {
     setExperiences((prevArray) => [...prevArray, res.data![0]]);
   }
 
-  async function update(skill: SkillProps) {
+  async function update(experience: ExperienceProps) {
+    console.log(experience);
     // setMyArray(prevArray => prevArray.map(elemento => elemento === elementoParaAtualizar ? novoValor : elemento));
   }
 
   async function remove(id: number) {
+    console.log(id);
+
+    return;
+
     const res = await deleteExperience(id);
 
     if (res.error) {
@@ -175,65 +174,9 @@ export default function Experiences() {
         </Button>
       </form>
       <div className="mt-8">
-        <div className="grid grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {experiences.map((exp) => (
-            <div
-              key={exp.id}
-              className="bg-black text-secondary p-4 rounded-xl"
-            >
-              <div className="flex justify-between gap-6">
-                <div>
-                  <p>{exp.company}</p>
-                  <p>{exp.occupation}</p>
-                  <div className="flex gap-1">
-                    <p>{formatToDate(exp.start_date, "date")?.substring(3)}</p>
-                    <span> - </span>
-                    <p>
-                      {exp.end_date
-                        ? formatToDate(exp.end_date, "date")?.substring(3)
-                        : "Presente"}
-                    </p>
-                  </div>
-                  <div className="flex flex-row gap-2 mt-4">
-                    {exp.description && (
-                      <Popover>
-                        <PopoverTrigger>
-                          <Button className="bg-secondary text-primary hover:bg-secondary/80">
-                            Descrição
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent side="top">
-                          {exp.description}
-                        </PopoverContent>
-                      </Popover>
-                    )}
-                    {exp.skills.length > 0 && (
-                      <Popover>
-                        <PopoverTrigger>
-                          <Button className="bg-secondary text-primary hover:bg-secondary/80">
-                            Habilidades
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent side="top">
-                          {exp.skills.map((skill, index) => (
-                            <span>
-                              {skill.title}
-                              {index < exp.skills.length - 1 && ", "}
-                            </span>
-                          ))}
-                        </PopoverContent>
-                      </Popover>
-                    )}
-                  </div>
-                </div>
-                <div className="self-end">
-                  <Trash
-                    onClick={() => remove(exp.id)}
-                    className="cursor-pointer bg-secondary text-black rounded-full p-0.5"
-                  />
-                </div>
-              </div>
-            </div>
+            <ExperienceCard exp={exp} onEdit={update} onRemove={remove} />
           ))}
         </div>
       </div>
