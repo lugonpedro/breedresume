@@ -67,7 +67,7 @@ export default function Skills() {
         </div>
         <div>
           <Label>Anos</Label>
-          <Input {...register("years")} />
+          <Input {...register("years")} type="number" />
         </div>
         <Button
           type="submit"
