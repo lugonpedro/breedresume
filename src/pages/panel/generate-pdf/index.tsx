@@ -8,6 +8,7 @@ import {
   Page,
   View,
   Text,
+  Font,
 } from "@react-pdf/renderer";
 import { useEffect, useState } from "react";
 import { readExperiencesByUser } from "../experiences/actions";
@@ -16,6 +17,21 @@ import { readSkillsByUser } from "../skills/actions";
 import { Input } from "@/components/ui/input";
 import { TextArea } from "@/components/text-area";
 import { Switch } from "@/components/ui/switch";
+import { formatToDate } from "@/utils/format-to-date";
+import { Card, CardContent } from "@/components/ui/card";
+
+Font.register({
+  family: "Open Sans",
+  fonts: [
+    {
+      src: "https://cdn.jsdelivr.net/npm/open-sans-all@0.1.3/fonts/open-sans-regular.ttf",
+    },
+    {
+      src: "https://cdn.jsdelivr.net/npm/open-sans-all@0.1.3/fonts/open-sans-600.ttf",
+      fontWeight: 600,
+    },
+  ],
+});
 
 interface ExperienceWithChecked extends ExperienceProps, CheckedProps {
   [key: string]: any;
@@ -39,6 +55,7 @@ const MyResume = ({ experiences, skills }: MyResumeProps) => {
           padding: 20,
           textAlign: "justify",
           gap: 12,
+          fontFamily: "Open Sans",
         }}
       >
         {experiences.length > 0 && (
@@ -46,15 +63,24 @@ const MyResume = ({ experiences, skills }: MyResumeProps) => {
             <Text style={{ fontWeight: "bold", marginBottom: 4 }}>
               Experiências
             </Text>
-            <View style={{ gap: 8 }}>
+            <View style={{ gap: 8, fontSize: 14 }}>
               {experiences
                 .filter((exp) => exp.checked)
                 .map((exp) => (
                   <View key={exp.id}>
                     <Text>{exp.company}</Text>
                     <Text>{exp.occupation}</Text>
-                    <Text>{exp.start_date}</Text>
-                    <Text>{exp.end_date}</Text>
+                    <View style={{ flexDirection: "row", gap: 2 }}>
+                      <Text>
+                        {formatToDate(exp.start_date, "date")?.substring(3)}
+                      </Text>
+                      <Text>-</Text>
+                      <Text>
+                        {exp.end_date
+                          ? formatToDate(exp.end_date, "date")?.substring(3)
+                          : "Presente"}
+                      </Text>
+                    </View>
                     <Text>{exp.description}</Text>
                     {exp.skills.length > 0 &&
                       exp.skills.map((skill) => (
@@ -67,24 +93,22 @@ const MyResume = ({ experiences, skills }: MyResumeProps) => {
         )}
         {skills.length > 0 && (
           <View>
-            <Text style={{ fontWeight: "semibold", marginBottom: 4 }}>
+            <Text style={{ fontWeight: 600, marginBottom: 4 }}>
               Habilidades
             </Text>
-            <View style={{ gap: 12 }}>
+            <View style={{ gap: 8, fontSize: 14 }}>
               {skills
                 .filter((skill) => skill.checked)
                 .map((skill) => (
-                  <View key={skill.id} style={{ flexDirection: "row", gap: 4 }}>
+                  <View key={skill.id} style={{ flexDirection: "row" }}>
+                    <Text style={{ marginHorizontal: 8 }}>•</Text>
                     <Text>{skill.title}</Text>
-                    {skill.years && (
-                      <>
-                        <Text>-</Text>
-                        <Text>
-                          {skill.years}{" "}
-                          {parseInt(skill.years) > 1 ? "anos" : "ano"}
-                        </Text>
-                      </>
-                    )}
+                    {/* {skill.years && (
+                      <Text>
+                        {skill.years}{" "}
+                        {parseInt(skill.years) > 1 ? "anos" : "ano"}
+                      </Text>
+                    )} */}
                   </View>
                 ))}
             </View>
@@ -164,50 +188,51 @@ export default function GeneratePdf() {
             <Label className="text-xl">Experiências</Label>
             <div className="flex flex-col gap-2 mt-4">
               {experiences.map((exp, index) => (
-                <div className="flex flex-col gap-2" key={exp.id}>
-                  <Switch
-                    checked={exp.checked}
-                    onCheckedChange={() =>
-                      handleExperience(index, "checked", !exp.checked)
-                    }
-                    className="data-[state=checked]:bg-green-500 data-[state=unchecked]:bg-red-500"
-                  />
-                  <div className="grid grid-cols-2 gap-2">
-                    <Input
-                      value={exp.company ?? ""}
-                      onChange={(e) =>
-                        handleExperience(index, "company", e.target.value)
+                <Card className="flex flex-col gap-2 bg-secondary" key={exp.id}>
+                  <CardContent className="py-2">
+                    <Switch
+                      checked={exp.checked}
+                      onCheckedChange={() =>
+                        handleExperience(index, "checked", !exp.checked)
                       }
+                      className="data-[state=checked]:bg-green-500 data-[state=unchecked]:bg-red-500"
                     />
-                    <Input
-                      value={exp.occupation ?? ""}
-                      onChange={(e) =>
-                        handleExperience(index, "occupation", e.target.value)
-                      }
-                    />
-                    <Input
-                      value={exp.start_date ?? ""}
-                      type="date"
-                      onChange={(e) =>
-                        handleExperience(index, "start_date", e.target.value)
-                      }
-                    />
-                    <Input
-                      value={exp.end_date ?? ""}
-                      type="date"
-                      onChange={(e) =>
-                        handleExperience(index, "end_date", e.target.value)
-                      }
-                    />
-                    <TextArea
-                      value={exp.description ?? ""}
-                      className="col-span-2"
-                      onChange={(e) =>
-                        handleExperience(index, "description", e.target.value)
-                      }
-                    />
-                  </div>
-                  {/* <SelectMultiInput
+                    <div className="grid grid-cols-2 gap-2">
+                      <Input
+                        value={exp.company ?? ""}
+                        onChange={(e) =>
+                          handleExperience(index, "company", e.target.value)
+                        }
+                      />
+                      <Input
+                        value={exp.occupation ?? ""}
+                        onChange={(e) =>
+                          handleExperience(index, "occupation", e.target.value)
+                        }
+                      />
+                      <Input
+                        value={exp.start_date ?? ""}
+                        type="date"
+                        onChange={(e) =>
+                          handleExperience(index, "start_date", e.target.value)
+                        }
+                      />
+                      <Input
+                        value={exp.end_date ?? ""}
+                        type="date"
+                        onChange={(e) =>
+                          handleExperience(index, "end_date", e.target.value)
+                        }
+                      />
+                      <TextArea
+                        value={exp.description ?? ""}
+                        className="col-span-2"
+                        onChange={(e) =>
+                          handleExperience(index, "description", e.target.value)
+                        }
+                      />
+                    </div>
+                    {/* <SelectMultiInput
                     placeholder="Habilidades"
                     value={exp.skills.map((skill) => {
                       return skill.id.toString();
@@ -220,7 +245,8 @@ export default function GeneratePdf() {
                     })}
                     onChange={(e) => handleExperience(index, "test", e)}
                   /> */}
-                </div>
+                  </CardContent>
+                </Card>
               ))}
             </div>
           </div>
@@ -252,18 +278,20 @@ export default function GeneratePdf() {
           </div>
           <Separator />
         </div>
-        <PDFViewer className="w-full" showToolbar={false}>
-          <MyResume experiences={experiences} skills={skills} />
-        </PDFViewer>
+        <div className="flex flex-col-reverse md:flex-col w-full gap-4">
+          <PDFDownloadLink
+            document={<MyResume experiences={experiences} skills={skills} />}
+            className=""
+          >
+            <Button className="uppercase font-semibold bg-secondary text-primary hover:bg-secondary/80">
+              Download
+            </Button>
+          </PDFDownloadLink>
+          <PDFViewer className="h-screen" showToolbar={false}>
+            <MyResume experiences={experiences} skills={skills} />
+          </PDFViewer>
+        </div>
       </div>
-      <PDFDownloadLink
-        document={<MyResume experiences={experiences} skills={skills} />}
-        className="max-w-screen-md"
-      >
-        <Button className="mt-10 uppercase font-semibold bg-secondary text-primary hover:bg-secondary/80">
-          Download
-        </Button>
-      </PDFDownloadLink>
     </>
   );
 }
