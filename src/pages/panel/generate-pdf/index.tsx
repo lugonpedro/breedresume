@@ -33,7 +33,14 @@ interface MyResumeProps {
 const MyResume = ({ experiences, skills }: MyResumeProps) => {
   return (
     <Document>
-      <Page size="A4" style={{ padding: 20, textAlign: "justify", gap: 12 }}>
+      <Page
+        size="A4"
+        style={{
+          padding: 20,
+          textAlign: "justify",
+          gap: 12,
+        }}
+      >
         {experiences.length > 0 && (
           <View>
             <Text style={{ fontWeight: "bold", marginBottom: 4 }}>
@@ -137,7 +144,6 @@ export default function GeneratePdf() {
     setExperiences((prevArray) => {
       const newArray: ExperienceWithChecked[] = [...prevArray];
       newArray[index][key] = value;
-      console.log(newArray);
       return newArray;
     });
   }
