@@ -24,3 +24,7 @@ interface SkillProps extends IdAndCreatedProps {
   years: string;
   user_id: string;
 }
+
+interface CheckedProps {
+  checked: boolean;
+}
