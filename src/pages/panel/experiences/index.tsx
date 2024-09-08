@@ -17,6 +17,7 @@ import {
   readExperiencesByUser,
   updateExperience,
 } from "./actions";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function Experiences() {
   const [experiences, setExperiences] = useState<ExperienceProps[]>([]);
@@ -242,68 +243,77 @@ export default function Experiences() {
         proceedText="Remover"
         proceedFn={() => remove(selectedExp!.id)}
       />
-      <form onSubmit={handleSubmit(add)} className="text-secondary">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <Label>Empresa</Label>
-            <Input
-              {...register("company", { required: true })}
-              placeholder="Empresa"
-            />
-            {errors.company && <></>}
-          </div>
-          <div>
-            <Label>Posição</Label>
-            <Input
-              {...register("occupation", { required: true })}
-              placeholder="Posição"
-            />
-            {errors.occupation && <></>}
-          </div>
-          <div>
-            <Label>Data de início</Label>
-            <Input
-              {...register("start_date", { required: true })}
-              placeholder="Data de início"
-              type="date"
-            />
-            {errors.company && <></>}
-          </div>
-          <div>
-            <Label>Data de fim</Label>
-            <Input
-              {...register("end_date")}
-              placeholder="Data de fim"
-              type="date"
-            />
-            {errors.company && <></>}
-          </div>
-          <div className="md:col-span-2">
-            <Label>Habilidades</Label>
-            <SelectMultiInput
-              options={skills}
-              value={skillsInExperience}
-              onChange={setSkillsInExperience}
-              placeholder="Habilidades"
-            />
-            {errors.company && <></>}
-          </div>
-          <div className="md:col-span-2">
-            <Label>Descrição</Label>
-            <TextArea {...register("description")} placeholder="Descrição" />
-            {errors.company && <></>}
-          </div>
-        </div>
-        <Button
-          type="submit"
-          className="w-full mt-4 bg-secondary text-primary hover:bg-secondary/80 md:w-max"
-          disabled={isLoading}
-        >
-          {isLoading ? <Spinner className="fill-primary" /> : "Adicionar"}
-        </Button>
-      </form>
+
+      <Card>
+        <CardContent className="mt-4">
+          <form onSubmit={handleSubmit(add)} className="flex flex-col">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label>Empresa</Label>
+                <Input
+                  {...register("company", { required: true })}
+                  placeholder="Empresa"
+                />
+                {errors.company && <></>}
+              </div>
+              <div>
+                <Label>Posição</Label>
+                <Input
+                  {...register("occupation", { required: true })}
+                  placeholder="Posição"
+                />
+                {errors.occupation && <></>}
+              </div>
+              <div>
+                <Label>Data de início</Label>
+                <Input
+                  {...register("start_date", { required: true })}
+                  placeholder="Data de início"
+                  type="date"
+                />
+                {errors.company && <></>}
+              </div>
+              <div>
+                <Label>Data de fim</Label>
+                <Input
+                  {...register("end_date")}
+                  placeholder="Data de fim"
+                  type="date"
+                />
+                {errors.company && <></>}
+              </div>
+              <div className="md:col-span-2">
+                <Label>Habilidades</Label>
+                <SelectMultiInput
+                  options={skills}
+                  value={skillsInExperience}
+                  onChange={setSkillsInExperience}
+                  placeholder="Habilidades"
+                />
+                {errors.company && <></>}
+              </div>
+              <div className="md:col-span-2">
+                <Label>Descrição</Label>
+                <TextArea
+                  {...register("description")}
+                  placeholder="Descrição"
+                />
+                {errors.company && <></>}
+              </div>
+            </div>
+            <Button
+              type="submit"
+              className="w-full mt-4 md:w-max self-end"
+              disabled={isLoading}
+            >
+              {isLoading ? <Spinner className="fill-primary" /> : "Adicionar"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+
       <div className="mt-8">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
           {experiences.map((exp) => (
             <ExperienceCard
               key={exp.id}
