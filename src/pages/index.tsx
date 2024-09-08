@@ -6,8 +6,8 @@ export default function Home() {
     <>
       <div className="bg-primary text-secondary min-h-screen">
         <div className="px-4 pt-20 pb-8 max-w-[1300px] mx-auto flex flex-col gap-20">
-          <div className="text-center">
-            <h1 className="text-5xl font-semibold">BreedResume</h1>
+          <div className="text-start md:text-center">
+            <h1 className="text-2xl md:text-5xl font-semibold">BreedResume</h1>
             <p className="text-secondary/20">
               Ser um generalista é bom a menos que você queira encontrar uma
               vaga no mercado de trabalho

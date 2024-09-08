@@ -41,7 +41,7 @@ export async function readSkillsByUser(user_id: string) {
   return { data, error } as ResponseType;
 }
 
-export async function updateSkill(id: string, title: string, years: string) {
+export async function updateSkill(id: number, title: string, years: string) {
   const { data, error } = await supabase
     .from("skills")
     .update({
