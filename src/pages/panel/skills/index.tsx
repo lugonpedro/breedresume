@@ -64,11 +64,6 @@ export default function Skills() {
 
   function handleUpdate(skill: SkillProps) {
     setSelectedSkill(skill);
-    // let formattedSkills = exp.skills.map((skill) => {
-    //   return skill.id.toString();
-    // });
-    // setPreviousEditSkillsInExperience(formattedSkills);
-    // setEditSkillsInExperience(formattedSkills);
     setEditModal(true);
   }
 
@@ -79,8 +74,6 @@ export default function Skills() {
       return;
     }
 
-    // setPreviousEditSkillsInExperience([]);
-    // setEditSkillsInExperience([]);
     setEditModal(false);
     setSelectedSkill(undefined);
     setSkills((prevArray) =>
