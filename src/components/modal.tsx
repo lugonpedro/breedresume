@@ -26,17 +26,22 @@ export function Modal({
   footer,
 }: ModalProps) {
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="w-[90vw] bg-secondary text-primary">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription className="text-secondary-foreground">
-            {description}
-          </DialogDescription>
-        </DialogHeader>
-        {content}
-        {footer && <DialogFooter>{footer}</DialogFooter>}
-      </DialogContent>
-    </Dialog>
+    <>
+      {open && (
+        <div className="bg-black/80 absolute w-screen h-screen top-0 left-0 z-50"></div>
+      )}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="w-[90vw] text-primary">
+          <DialogHeader>
+            <DialogTitle>{title}</DialogTitle>
+            <DialogDescription className="text-secondary-foreground">
+              {description}
+            </DialogDescription>
+          </DialogHeader>
+          {content}
+          {footer && <DialogFooter>{footer}</DialogFooter>}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
