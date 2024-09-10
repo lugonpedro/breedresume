@@ -5,6 +5,7 @@ import { SelectMultiInput } from "@/components/select-multi-input";
 import { Spinner } from "@/components/spinner";
 import { TextArea } from "@/components/text-area";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authContext } from "@/contexts/auth-context";
@@ -17,7 +18,6 @@ import {
   readExperiencesByUser,
   updateExperience,
 } from "./actions";
-import { Card, CardContent } from "@/components/ui/card";
 
 export default function Experiences() {
   const [experiences, setExperiences] = useState<ExperienceProps[]>([]);
@@ -220,17 +220,19 @@ export default function Experiences() {
                   {errorsUpdate.company && <></>}
                 </div>
               </div>
-              <Button
-                type="submit"
-                className="w-full mt-4 bg-secondary text-primary hover:bg-secondary/80 md:w-max"
-                disabled={isLoadingUpdate}
-              >
-                {isLoadingUpdate ? (
-                  <Spinner className="fill-primary" />
-                ) : (
-                  "Salvar"
-                )}
-              </Button>
+              <div className="flex justify-end">
+                <Button
+                  type="submit"
+                  className="w-full mt-4 md:w-max"
+                  disabled={isLoadingUpdate}
+                >
+                  {isLoadingUpdate ? (
+                    <Spinner className="fill-primary" />
+                  ) : (
+                    "Salvar"
+                  )}
+                </Button>
+              </div>
             </form>
           </>
         }

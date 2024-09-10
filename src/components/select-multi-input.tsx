@@ -21,7 +21,7 @@ interface SelectMultiInputProps {
   placeholder: string;
   options: SelectObjectProps[];
   value: string[];
-  onChange: Dispatch<SetStateAction<string[]>>;
+  onChange: Dispatch<SetStateAction<string[]>> | any;
   disabled?: boolean;
 }
 

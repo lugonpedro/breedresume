@@ -1,7 +1,6 @@
 import { formatToDate } from "@/utils/format-to-date";
 import { Pencil, Trash } from "lucide-react";
 import { IconButton } from "./icon-button";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import {
   Card,
   CardContent,
@@ -10,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
 interface ExperienceCardProps {
   exp: ExperienceProps;
@@ -23,14 +23,14 @@ export function ExperienceCard({ exp, onEdit, onRemove }: ExperienceCardProps) {
       <CardHeader>
         <CardTitle>{exp.company}</CardTitle>
         <CardDescription>{exp.occupation}</CardDescription>
-        <CardDescription className="flex gap-1">
-          <p>{formatToDate(exp.start_date, "date")?.substring(3)}</p>
+        <CardDescription>
+          <span>{formatToDate(exp.start_date, "date")?.substring(3)}</span>
           <span> - </span>
-          <p>
+          <span>
             {exp.end_date
               ? formatToDate(exp.end_date, "date")?.substring(3)
               : "Presente"}
-          </p>
+          </span>
         </CardDescription>
       </CardHeader>
       <CardContent>

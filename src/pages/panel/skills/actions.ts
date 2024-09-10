@@ -46,7 +46,7 @@ export async function updateSkill(id: number, title: string, years: string) {
     .from("skills")
     .update({
       title,
-      years: years.length > 0 ? parseInt(years) : null,
+      years: years ? parseInt(years) : null,
     })
     .eq("id", id)
     .select();

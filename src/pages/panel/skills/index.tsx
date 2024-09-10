@@ -1,4 +1,9 @@
+import { ConfirmDialog } from "@/components/confirm-dialog";
+import { Modal } from "@/components/modal";
+import { SkillCard } from "@/components/skill-card";
+import { Spinner } from "@/components/spinner";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authContext } from "@/contexts/auth-context";
@@ -10,11 +15,6 @@ import {
   readSkillsByUser,
   updateSkill,
 } from "./actions";
-import { Card, CardContent } from "@/components/ui/card";
-import { SkillCard } from "@/components/skill-card";
-import { Modal } from "@/components/modal";
-import { Spinner } from "@/components/spinner";
-import { ConfirmDialog } from "@/components/confirm-dialog";
 
 export default function Skills() {
   const [skills, setSkills] = useState<SkillProps[]>([]);
@@ -128,17 +128,19 @@ export default function Skills() {
                   {errorsUpdate.years && <></>}
                 </div>
               </div>
-              <Button
-                type="submit"
-                className="w-full mt-4 bg-secondary text-primary hover:bg-secondary/80 md:w-max"
-                disabled={isLoadingUpdate}
-              >
-                {isLoadingUpdate ? (
-                  <Spinner className="fill-primary" />
-                ) : (
-                  "Salvar"
-                )}
-              </Button>
+              <div className="flex justify-end">
+                <Button
+                  type="submit"
+                  className="w-full mt-4 md:w-max"
+                  disabled={isLoadingUpdate}
+                >
+                  {isLoadingUpdate ? (
+                    <Spinner className="fill-primary" />
+                  ) : (
+                    "Salvar"
+                  )}
+                </Button>
+              </div>
             </form>
           </>
         }

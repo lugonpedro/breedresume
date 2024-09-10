@@ -25,12 +25,12 @@ export function SkillCard({ skill, onEdit, onRemove }: SkillCardProps) {
           </CardDescription>
         )}
       </CardHeader>
-      <CardFooter>
+      <CardFooter className="flex gap-2">
         <IconButton onClick={() => onEdit(skill)}>
           <Pencil />
         </IconButton>
         <IconButton onClick={() => onRemove(skill)}>
-          <Trash />
+          <Trash className="text-red-500" />
         </IconButton>
       </CardFooter>
     </Card>

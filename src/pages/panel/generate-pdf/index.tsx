@@ -1,24 +1,22 @@
+import { ExperienceGenerateCard } from "@/components/experience-generate-card";
+import { SkillGenerateCard } from "@/components/skill-generate-card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { authContext } from "@/contexts/auth-context";
+import { formatToDate } from "@/utils/format-to-date";
 import {
-  PDFViewer,
-  PDFDownloadLink,
   Document,
-  Page,
-  View,
-  Text,
   Font,
+  PDFDownloadLink,
+  PDFViewer,
+  Page,
+  Text,
+  View,
 } from "@react-pdf/renderer";
 import { useEffect, useState } from "react";
 import { readExperiencesByUser } from "../experiences/actions";
-import { authContext } from "@/contexts/auth-context";
 import { readSkillsByUser } from "../skills/actions";
-import { Input } from "@/components/ui/input";
-import { TextArea } from "@/components/text-area";
-import { Switch } from "@/components/ui/switch";
-import { formatToDate } from "@/utils/format-to-date";
-import { Card, CardContent } from "@/components/ui/card";
 
 Font.register({
   family: "Open Sans",
@@ -33,19 +31,6 @@ Font.register({
   ],
 });
 
-interface ExperienceWithChecked extends ExperienceProps, CheckedProps {
-  [key: string]: any;
-}
-
-interface SkillWithChecked extends SkillProps, CheckedProps {
-  [key: string]: any;
-}
-
-interface MyResumeProps {
-  experiences: ExperienceWithChecked[];
-  skills: SkillWithChecked[];
-}
-
 const MyResume = ({ experiences, skills }: MyResumeProps) => {
   return (
     <Document>
@@ -56,19 +41,22 @@ const MyResume = ({ experiences, skills }: MyResumeProps) => {
           textAlign: "justify",
           gap: 12,
           fontFamily: "Open Sans",
+          fontSize: 12,
         }}
       >
         {experiences.length > 0 && (
           <View>
-            <Text style={{ fontWeight: "bold", marginBottom: 4 }}>
+            <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 4 }}>
               Experiências
             </Text>
-            <View style={{ gap: 8, fontSize: 14 }}>
+            <View style={{ gap: 8 }}>
               {experiences
                 .filter((exp) => exp.checked)
                 .map((exp) => (
                   <View key={exp.id}>
-                    <Text>{exp.company}</Text>
+                    <Text style={{ fontSize: 14, fontWeight: "semibold" }}>
+                      {exp.company}
+                    </Text>
                     <Text>{exp.occupation}</Text>
                     <View style={{ flexDirection: "row", gap: 2 }}>
                       <Text>
@@ -82,10 +70,19 @@ const MyResume = ({ experiences, skills }: MyResumeProps) => {
                       </Text>
                     </View>
                     <Text>{exp.description}</Text>
-                    {exp.skills.length > 0 &&
-                      exp.skills.map((skill) => (
-                        <Text key={skill.id}>{skill.title}</Text>
-                      ))}
+                    {exp.skills.length > 0 && (
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          gap: 2,
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        {exp.skills.map((skill) => (
+                          <Text key={skill.id}>{skill.title}</Text>
+                        ))}
+                      </View>
+                    )}
                   </View>
                 ))}
             </View>
@@ -93,22 +90,22 @@ const MyResume = ({ experiences, skills }: MyResumeProps) => {
         )}
         {skills.length > 0 && (
           <View>
-            <Text style={{ fontWeight: 600, marginBottom: 4 }}>
+            <Text style={{ fontSize: 16, fontWeight: "bold", marginBottom: 4 }}>
               Habilidades
             </Text>
-            <View style={{ gap: 8, fontSize: 14 }}>
+            <View style={{ gap: 4 }}>
               {skills
                 .filter((skill) => skill.checked)
                 .map((skill) => (
                   <View key={skill.id} style={{ flexDirection: "row" }}>
-                    <Text style={{ marginHorizontal: 8 }}>•</Text>
-                    <Text>{skill.title}</Text>
-                    {/* {skill.years && (
+                    <Text style={{ marginRight: 4 }}>•</Text>
+                    <Text style={{ marginRight: 4 }}>{skill.title}</Text>
+                    {skill.years && (
                       <Text>
                         {skill.years}{" "}
                         {parseInt(skill.years) > 1 ? "anos" : "ano"}
                       </Text>
-                    )} */}
+                    )}
                   </View>
                 ))}
             </View>
@@ -160,11 +157,7 @@ export default function GeneratePdf() {
     }
   }, [user]);
 
-  function handleExperience(
-    index: number,
-    key: string,
-    value: string | boolean
-  ) {
+  function handleExperience(index: number, key: string, value: any) {
     setExperiences((prevArray) => {
       const newArray: ExperienceWithChecked[] = [...prevArray];
       newArray[index][key] = value;
@@ -188,91 +181,27 @@ export default function GeneratePdf() {
             <Label className="text-xl">Experiências</Label>
             <div className="flex flex-col gap-2 mt-4">
               {experiences.map((exp, index) => (
-                <Card className="flex flex-col gap-2 bg-secondary" key={exp.id}>
-                  <CardContent className="py-2">
-                    <Switch
-                      checked={exp.checked}
-                      onCheckedChange={() =>
-                        handleExperience(index, "checked", !exp.checked)
-                      }
-                      className="data-[state=checked]:bg-green-500 data-[state=unchecked]:bg-red-500"
-                    />
-                    <div className="grid grid-cols-2 gap-2">
-                      <Input
-                        value={exp.company ?? ""}
-                        onChange={(e) =>
-                          handleExperience(index, "company", e.target.value)
-                        }
-                      />
-                      <Input
-                        value={exp.occupation ?? ""}
-                        onChange={(e) =>
-                          handleExperience(index, "occupation", e.target.value)
-                        }
-                      />
-                      <Input
-                        value={exp.start_date ?? ""}
-                        type="date"
-                        onChange={(e) =>
-                          handleExperience(index, "start_date", e.target.value)
-                        }
-                      />
-                      <Input
-                        value={exp.end_date ?? ""}
-                        type="date"
-                        onChange={(e) =>
-                          handleExperience(index, "end_date", e.target.value)
-                        }
-                      />
-                      <TextArea
-                        value={exp.description ?? ""}
-                        className="col-span-2"
-                        onChange={(e) =>
-                          handleExperience(index, "description", e.target.value)
-                        }
-                      />
-                    </div>
-                    {/* <SelectMultiInput
-                    placeholder="Habilidades"
-                    value={exp.skills.map((skill) => {
-                      return skill.id.toString();
-                    })}
-                    options={exp.skills.map((skill) => {
-                      return {
-                        value: skill.id.toString(),
-                        label: skill.title,
-                      };
-                    })}
-                    onChange={(e) => handleExperience(index, "test", e)}
-                  /> */}
-                  </CardContent>
-                </Card>
+                <ExperienceGenerateCard
+                  key={exp.id}
+                  exp={exp}
+                  index={index}
+                  handleExperience={handleExperience}
+                  skills={skills}
+                />
               ))}
             </div>
           </div>
           <Separator />
           <div>
-            <Label className="text-secondary text-xl">Habilidades</Label>
-            <div className="flex flex-col gap-4">
+            <Label className="text-xl">Habilidades</Label>
+            <div className="flex flex-col gap-2 mt-4">
               {skills.map((skill, index) => (
-                <div
+                <SkillGenerateCard
                   key={skill.id}
-                  className="text-secondary grid grid-cols-2 gap-2"
-                >
-                  <Input
-                    value={skill.title ?? ""}
-                    onChange={(e) =>
-                      handleSkill(index, "title", e.target.value)
-                    }
-                  />
-                  <Input
-                    value={skill.years ?? ""}
-                    type="number"
-                    onChange={(e) =>
-                      handleSkill(index, "years", e.target.value)
-                    }
-                  />
-                </div>
+                  skill={skill}
+                  index={index}
+                  handleSkill={handleSkill}
+                />
               ))}
             </div>
           </div>
